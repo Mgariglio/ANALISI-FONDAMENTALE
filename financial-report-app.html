@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Finanziari Giornalieri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        input[type="date"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="date"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .file-upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .file-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .file-item button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .file-item button:hover {
+            background: #ff3838;
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .reports-list {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .reports-list h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .report-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-date {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .report-title {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .report-text {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .report-files {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .file-tag {
+            background: #e0e7ff;
+            color: #4c51bf;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .delete-report-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-report-btn:hover {
+            background: #ff3838;
+            transform: scale(1.05);
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
+            animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 2.5s forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Report Finanziari</h1>
+            <p>Carica i tuoi report giornalieri con allegati</p>
+        </div>
+
+        <div class="form-container">
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="date">Data del Report</label>
+                    <input type="date" id="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Titolo del Report</label>
+                    <input type="text" id="title" placeholder="Es. Report vendite Q1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportText">Testo del Report</label>
+                    <textarea id="reportText" placeholder="Inserisci qui il contenuto del tuo report..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Allegati (JPG/PDF)</label>
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" accept=".jpg,.jpeg,.pdf" multiple>
+                        <label for="fileInput" class="file-upload-label">
+                            📎 Clicca per caricare file
+                        </label>
+                    </div>
+                    <div id="fileList" class="file-list"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    💾 Salva Report
+                </button>
+            </form>
+        </div>
+
+        <div class="reports-list">
+            <h2>Report Salvati</h2>
+            <div id="reportsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Gestione dei file caricati
+        let uploadedFiles = [];
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.type === 'image/jpeg' || file.type === 'application/pdf') {
+                    uploadedFiles.push(file);
+                    displayFile(file);
+                } else {
+                    alert(`Il file ${file.name} non è supportato. Usa solo JPG o PDF.`);
+                }
+            });
+            fileInput.value = ''; // Reset input
+        });
+
+        function displayFile(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <span>${file.name}</span>
+                <button onclick="removeFile('${file.name}')">Rimuovi</button>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            renderFileList();
+        }
+
+        function renderFileList() {
+            fileList.innerHTML = '';
+            uploadedFiles.forEach(file => displayFile(file));
+        }
+
+        // Gestione del form
+        const reportForm = document.getElementById('reportForm');
+        reportForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const report = {
+                id: Date.now(),
+                date: document.getElementById('date').value,
+                title: document.getElementById('title').value,
+                text: document.getElementById('reportText').value,
+                files: uploadedFiles.map(file => ({
+                    name: file.name,
+                    type: file.type
+                }))
+            };
+
+            // Salva in memoria (simulazione storage)
+            if (!window.financialReports) {
+                window.financialReports = [];
+            }
+            window.financialReports.unshift(report);
+
+            // Mostra messaggio di successo
+            showSuccessMessage();
+
+            // Reset form
+            reportForm.reset();
+            uploadedFiles = [];
+            fileList.innerHTML = '';
+
+            // Aggiorna la lista dei report
+            displayReports();
+        });
+
+        function showSuccessMessage() {
+            const message = document.createElement('div');
+            message.className = 'success-message';
+            message.textContent = '✅ Report salvato con successo!';
+            document.body.appendChild(message);
+            setTimeout(() => message.remove(), 3000);
+        }
+
+        // Visualizza i report salvati
+        function displayReports() {
+            const reportsList = document.getElementById('reportsList');
+            const reports = window.financialReports || [];
+
+            reportsList.innerHTML = '';
+
+            if (reports.length === 0) {
+                reportsList.innerHTML = '<p style="color: #666;">Nessun report ancora salvato.</p>';
+                return;
+            }
+
+            reports.forEach(report => {
+                const reportCard = document.createElement('div');
+                reportCard.className = 'report-card';
+                reportCard.innerHTML = `
+                    <div class="report-date">📅 ${new Date(report.date).toLocaleDateString('it-IT')}</div>
+                    <div class="report-title">${report.title}</div>
+                    <div class="report-text">${report.text.substring(0, 200)}${report.text.length > 200 ? '...' : ''}</div>
+                    <div class="report-files">
+                        ${report.files.map(file => `
+                            <span class="file-tag">${file.type === 'image/jpeg' ? '🖼️' : '📄'} ${file.name}</span>
+                        `).join('')}
+                    </div>
+                    <button class="delete-report-btn" onclick="deleteReport(${report.id})">🗑️ Elimina</button>
+                `;
+                reportsList.appendChild(reportCard);
+            });
+        }
+
+        function deleteReport(id) {
+            if (confirm('Sei sicuro di voler eliminare questo report?')) {
+                window.financialReports = (window.financialReports || []).filter(report => report.id !== id);
+                displayReports();
+            }
+        }
+
+        // Imposta la data di oggi come default
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Carica i report all'avvio
+        displayReports();
+    </script>
+</body>
+</html>
